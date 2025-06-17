@@ -1,0 +1,45 @@
+name: Deploy Terraform
+description: Shared Action to install Terraform and Run plan and deploy
+inputs:
+  CHANGE_DIRECTORY:
+    description: Directory where the Terraform has to run
+  PLAN_ONLY:
+    description: If only plan has to run
+    default: 'true'
+
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install Terraform
+      shell: bash
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y wget unzip
+        wget https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip
+        unzip terraform_1.6.6_linux_amd64.zip
+        sudo mv terraform /usr/local/bin/
+        terraform -version
+    - name: Terraform Init
+      shell: bash
+      run: |
+        terraform init -upgrade
+      working-directory: 
+        ${{ inputs.CHANGE_DIRECTORY }}
+    - name: Terraform fmt check
+      shell: bash
+      run: | 
+        terraform fmt -check
+      working-directory: 
+        ${{ inputs.CHANGE_DIRECTORY }}
+    - name: Terraform Validate
+      shell: bash
+      run: |
+        terraform validate
+      working-directory: $CHANGE_DIRECTORY
+    - name: Terraform Plan
+      if: ${{ inputs.PLAN_ONLY }} == 'true'
+      shell: bash
+      run: |
+        terraform plan
+      working-directory: ${{ inputs.CHANGE_DIRECTORY }}

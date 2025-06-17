@@ -1,0 +1,36 @@
+name: Pull Request
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  detect-changes:
+    name: Detech Changes
+    runs-on: ubuntu:2204
+    outputs:
+      aws: steps.changes.outputs.aws
+      azure: steps.changes.outputs.azure
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Detect Changes
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            aws: ./aws/**
+            azure: ./azure/**
+  terraform-plan:
+    name: Run Terrform plan
+    needs: detect-changes
+    runs-on: ubuntu:2204
+    if : needs.detect-changes.outputs.aws == 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Terraform Plan
+        uses: ./.github/shared-actions/deploy-terraform
+        with:
+          PLAN_ONLY: true
+          CHANGE_DIRECTORY: ./aws
