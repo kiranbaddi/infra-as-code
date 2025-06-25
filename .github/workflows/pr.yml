@@ -36,7 +36,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-skip-session-tagging: true
-          role-to-asume: "arn:aws:iam::654654584835:role/github-actions-iac"
+          role-to-assume: "arn:aws:iam::654654584835:role/github-actions-iac"
       - name: Terraform Plan
         uses: ./.github/shared-actions/deploy-terraform
         with:
