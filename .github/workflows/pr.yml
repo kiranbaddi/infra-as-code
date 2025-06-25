@@ -6,8 +6,8 @@ on:
 
 jobs:
   detect-changes:
-    name: Detech Changes
-    runs-on: ubuntu:2204
+    name: Detect Changes
+    runs-on: ubuntu-22.04
     outputs:
       aws: steps.changes.outputs.aws
       azure: steps.changes.outputs.azure
@@ -27,7 +27,7 @@ jobs:
     permissions:
       id-token: write
       contents: write
-    runs-on: ubuntu:2204
+    runs-on: ubuntu-22.04
     if: needs.detect-changes.outputs.aws == 'true'
     steps:
       - name: Checkout
