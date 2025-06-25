@@ -1,0 +1,37 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "*",
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "aws:RequestedRegion": "eu-central-1"
+                }
+            }
+        },
+        {
+            "Effect": "Deny",
+            "Action": "ec2:RunInstances",
+            "Resource": "*",
+            "Condition": {
+                "ForAnyValue:StringNotLike": {
+                    "ec2:InstanceType": [
+                        "m4.*",
+                        "t4g.*",
+                        "c5.*",
+                        "r5.*",
+                        "a1.*",
+                        "g4dn.*",
+                        "d2.*",
+                        "i3.*"
+                    ]
+                },
+                "StringEquals": {
+                    "aws:RequestedRegion": "eu-central-1"
+                }
+            }
+        }
+    ]
+}
