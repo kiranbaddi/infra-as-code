@@ -38,7 +38,7 @@ jobs:
           role-skip-session-tagging: true
           role-to-assume: "arn:aws:iam::654654584835:role/github-actions-iac"
           role-session-name: terraform-plan
-          aws-region: "eu-central-1"
+          aws-region: "us-east-1"
       - name: Terraform Plan
         uses: ./.github/shared-actions/deploy-terraform
         with:
