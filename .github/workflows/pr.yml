@@ -27,11 +27,11 @@ jobs:
   terraform-plan:
     name: Run Terrform plan
     needs: detect-changes
+    if: needs.detect-changes.outputs.aws == true
     permissions:
       id-token: write
       contents: write
     runs-on: ubuntu-22.04
-    if: needs.detect-changes.outputs.aws == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
