@@ -21,24 +21,42 @@ jobs:
           filters: |
             aws: ./aws/**
             azure: ./azure/**
-  terraform-plan:
-    name: Run Terrform plan
-    needs: detect-changes
-    permissions:
-      id-token: write
-      contents: write
+  get-output:
+    name: Debug
     runs-on: ubuntu-22.04
-    if: needs.detect-changes.outputs.aws == 'true'
+    needs: detect-changes
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Configure AWS Permissons
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-skip-session-tagging: true
-          role-to-asume: "arn:aws:iam::654654584835:role/github-actions-iac"
-      - name: Terraform Plan
-        uses: ./.github/shared-actions/deploy-terraform
-        with:
-          PLAN_ONLY: true
-          CHANGE_DIRECTORY: ./aws
+      - name: Checkoutput
+        run: |
+          echo ${{ needs.detect-changes.outputs.aws }}
+  run-if-true:
+    name: Debug-2
+    runs-on: ubuntu-22.04
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.aws }} == true
+    steps:
+      - name: Checkoutput
+        run: |
+          echo "Let's roll"
+
+  # terraform-plan:
+  #   name: Run Terrform plan
+  #   needs: detect-changes
+  #   permissions:
+  #     id-token: write
+  #     contents: write
+  #   runs-on: ubuntu-22.04
+  #   if: {{ needs.detect-changes.outputs.aws }}== 'true'
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #     - name: Configure AWS Permissons
+  #       uses: aws-actions/configure-aws-credentials@v4
+  #       with:
+  #         role-skip-session-tagging: true
+  #         role-to-asume: "arn:aws:iam::654654584835:role/github-actions-iac"
+  #     - name: Terraform Plan
+  #       uses: ./.github/shared-actions/deploy-terraform
+  #       with:
+  #         PLAN_ONLY: true
+  #         CHANGE_DIRECTORY: ./aws
