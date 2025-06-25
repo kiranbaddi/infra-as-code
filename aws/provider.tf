@@ -4,8 +4,17 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
+
+  }
+  backend "s3" {
+    bucket         = "terraform-state-30564"
+    key            = "global/s3/terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = " terraform-lock-db"
   }
 }
+
+
 
 # Configure the AWS Provider
 provider "aws" {
