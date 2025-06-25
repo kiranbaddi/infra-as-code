@@ -24,11 +24,19 @@ jobs:
   terraform-plan:
     name: Run Terrform plan
     needs: detect-changes
+    permissions:
+      id-token: write
+      contents: write
     runs-on: ubuntu:2204
-    if : needs.detect-changes.outputs.aws == 'true'
+    if: needs.detect-changes.outputs.aws == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Configure AWS Permissons
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-skip-session-tagging: true
+          role-to-asume: "arn:aws:iam::654654584835:role/github-actions-iac"
       - name: Terraform Plan
         uses: ./.github/shared-actions/deploy-terraform
         with:
