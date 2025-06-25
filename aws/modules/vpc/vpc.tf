@@ -36,9 +36,9 @@ resource "aws_subnet" "main" {
   }
 }
 resource "aws_nat_gateway" "main" {
-  subnet_id  = aws_subnet.nat_gateway.id
+  subnet_id     = aws_subnet.nat_gateway.id
   allocation_id = aws_eip.nat_gateway.id
-  depends_on = [aws_eip.nat_gateway]
+  depends_on    = [aws_eip.nat_gateway]
 }
 
 resource "aws_eip" "nat_gateway" {
