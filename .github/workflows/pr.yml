@@ -6,29 +6,33 @@ on:
 
 jobs:
   detect-changes:
-    name: Detech Changes
-    runs-on: ubuntu:2204
+    name: Detect Changes
+    runs-on: ubuntu-22.04
     outputs:
-      aws: steps.changes.outputs.aws
-      azure: steps.changes.outputs.azure
+      aws: ${{ steps.changes.outputs.aws }}
+      azure: ${{ steps.changes.outputs.azure }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Detect Changes
-        uses: dorny/paths-filter@v2
+        uses: dorny/paths-filter@v3
         id: changes
         with:
+          base: ${{ github.ref }}
           filters: |
-            aws: ./aws/**
-            azure: ./azure/**
-  terraform-plan:
-    name: Run Terrform plan
+            aws: 
+              - './aws/**'
+            azure: 
+              - './azure/**'
+
+  terrafom-plan:
+    name: Terraform Plan
+    runs-on: ubuntu-22.04
     needs: detect-changes
+    if: needs.detect-changes.outputs.aws == 'true'
     permissions:
       id-token: write
       contents: write
-    runs-on: ubuntu:2204
-    if: needs.detect-changes.outputs.aws == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -36,9 +40,11 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-skip-session-tagging: true
-          role-to-asume: "arn:aws:iam::654654584835:role/github-actions-iac"
+          role-to-assume: "arn:aws:iam::654654584835:role/github-actions"
+          role-session-name: terraform-plan
+          aws-region: "eu-central-1"
       - name: Terraform Plan
         uses: ./.github/shared-actions/deploy-terraform
         with:
           PLAN_ONLY: true
-          CHANGE_DIRECTORY: ./aws
+          CHANGE_DIRECTORY: "./aws"

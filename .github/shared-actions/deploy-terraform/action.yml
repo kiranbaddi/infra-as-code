@@ -36,7 +36,7 @@ runs:
       shell: bash
       run: |
         terraform validate
-      working-directory: $CHANGE_DIRECTORY
+      working-directory:   ${{ inputs.CHANGE_DIRECTORY }}
     - name: Terraform Plan
       if: ${{ inputs.PLAN_ONLY }} == 'true'
       shell: bash
