@@ -24,14 +24,31 @@ jobs:
               - './aws/**'
             azure: 
               - './azure/**'
-  terraform-plan:
-    name: Run Terrform plan
+  debug:
+    name: Debug Again
+    runs-on: ubuntu-22.04
     needs: detect-changes
-    if: needs.detect-changes.outputs.aws == true
+    steps:
+      - run: echo ${{ needs.detect-changes.outputs.aws }}
+
+  debug2:
+    name: Debug2 Again
+    runs-on: ubuntu-22.04
+    needs: detect-changes
+    if: needs.detect-changes.outputs.aws == 'true'
+    steps:
+      - run: |
+          echo "Let's Roll"
+          echo ${{ needs.detect-changes.outputs.aws }}
+
+  terrafom-plan:
+    name: Terraform Plan
+    runs-on: ubuntu-22.04
+    needs: detect-changes
+    if: needs.detect-changes.outputs.aws == 'true'
     permissions:
       id-token: write
       contents: write
-    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -41,7 +58,7 @@ jobs:
           role-skip-session-tagging: true
           role-to-assume: "arn:aws:iam::654654584835:role/github-actions-iac"
           role-session-name: terraform-plan
-          aws-region: "us-east-1"
+          aws-region: "eu-central-1"
       - name: Terraform Plan
         uses: ./.github/shared-actions/deploy-terraform
         with:
