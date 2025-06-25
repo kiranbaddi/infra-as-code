@@ -9,8 +9,8 @@ jobs:
     name: Detect Changes
     runs-on: ubuntu-22.04
     outputs:
-      aws: steps.changes.outputs.aws
-      azure: steps.changes.outputs.azure
+      aws: ${{ steps.changes.outputs.aws }}
+      azure: ${{ steps.changes.outputs.azure }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,22 +24,6 @@ jobs:
               - './aws/**'
             azure: 
               - './azure/**'
-  debug:
-    name: Debug Again
-    runs-on: ubuntu-22.04
-    needs: detect-changes
-    steps:
-      - run: echo ${{ needs.detect-changes.outputs.aws }}
-
-  debug2:
-    name: Debug2 Again
-    runs-on: ubuntu-22.04
-    needs: detect-changes
-    if: needs.detect-changes.outputs.aws == 'true'
-    steps:
-      - run: |
-          echo "Let's Roll"
-          echo ${{ needs.detect-changes.outputs.aws }}
 
   terrafom-plan:
     name: Terraform Plan
