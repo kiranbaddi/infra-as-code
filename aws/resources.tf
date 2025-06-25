@@ -1,6 +1,6 @@
-module "learnops_vpc" {
+module "craftista_vpc" {
   source                 = "./modules/vpc"
-  PREFIX                 = "learnops"
+  PREFIX                 = "craftista"
   REGION                 = "eu-central-1"
   ENVIRONMENT            = "development"
   VPC_CIDR_BLOCK         = "10.0.0.0/16"
@@ -16,3 +16,5 @@ module "learnops_vpc" {
     }
   }
 }
+
+
