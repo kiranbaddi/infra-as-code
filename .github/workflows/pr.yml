@@ -47,4 +47,4 @@ jobs:
         uses: ./.github/shared-actions/deploy-terraform
         with:
           PLAN_ONLY: true
-          CHANGE_DIRECTORY: ./aws
+          CHANGE_DIRECTORY: "./aws"
